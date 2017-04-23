@@ -70,7 +70,7 @@ impl<'a> PrintRasterBitImage<'a> {
             let luma_data = if bit { 0 } else { 255 };
             imgbuf.put_pixel(x, y, image::Luma { data: [luma_data] });
             if x == width - 1 {
-                y = y + 1;
+                y += 1;
             }
         }
 
