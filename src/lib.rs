@@ -58,9 +58,7 @@ named!(pub print_raster_bit_image( &[u8] ) -> PrintRasterBitImage,
 
 impl<'a> PrintRasterBitImage<'a> {
     pub fn make_img(self) -> image::GrayImage {
-        let mut imgbuf = image::GrayImage::from_fn(self.x as u32 * 8,
-                                                   self.y as u32,
-                                                   |_, _| image::Luma([255u8]));
+        let mut imgbuf = image::GrayImage::new(self.x as u32 * 8, self.y as u32);
 
         let width = self.x as u32 * 8;
         let mut y = 0;
