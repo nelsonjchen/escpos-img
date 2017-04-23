@@ -4,5 +4,6 @@ name = "escpos-img"
 version = "0.1.0"
 
 [dependencies]
+bit-vec = "0.4.3"
 image = "0.12.4"
 nom = "2.2.1"

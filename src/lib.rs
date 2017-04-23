@@ -5,6 +5,9 @@ use nom::le_u16;
 extern crate image;
 use image::{ImageLuma8, DynamicImage, GenericImage};
 
+extern crate bit_vec;
+use bit_vec::BitVec;
+
 #[derive(PartialEq,Eq,Debug,Clone)]
 pub enum RasterBitImageMode {
     Normal,
@@ -55,8 +58,30 @@ named!(pub print_raster_bit_image( &[u8] ) -> PrintRasterBitImage,
 );
 
 impl<'a> PrintRasterBitImage<'a> {
-    fn make_img(self) -> DynamicImage::ImageLuma8 {
-        let mut imgbuf = DynamicImage::new_luma8(self.x as u32 * 8, self.y as u32 * 8);
+    pub fn make_img(self) -> image::GrayImage {
+        let mut imgbuf = image::GrayImage::from_fn(self.x as u32 * 8,
+                                                   self.y as u32,
+                                                   |_, _| image::Luma([255u8]));
+
+        let width = self.x as u32 * 8;
+        let mut y = 0;
+        let bv = BitVec::from_bytes(self.data);
+        for (i, bit) in bv.iter().enumerate() {
+            let x = (i as u32) % width;
+            let luma_data = if bit { 255 } else { 0 };
+            println!("x: {:?}, y: {:?}, self.x: {:?}, self.y: {:?}, len: {:?},i: {:?}",
+                     x,
+                     y,
+                     self.x,
+                     self.y,
+                     imgbuf.height(),
+                     i);
+            imgbuf.put_pixel(x, y, image::Luma { data: [luma_data] });
+            if x == width - 1 {
+                y = y + 1;
+            }
+        }
+
         imgbuf
     }
 }
@@ -77,8 +102,19 @@ mod tests {
         assert_eq!(parsed_raster.y, 384);
         assert_eq!(parsed_raster.data.len(), 24576);
     }
+
+    #[test]
+    fn write_image() {
+        let escpos_img = include_bytes!("../assets/indian_head.escpos");
+        let parsed = print_raster_bit_image(escpos_img);
         let (_, parsed_raster) = parsed.unwrap();
         assert_eq!(parsed_raster.mode, RasterBitImageMode::Normal);
         assert_eq!(parsed_raster.data.len(), 24576);
+        let imgbuf = parsed_raster.make_img();
+
+        use std::fs::File;
+        use std::path::Path;
+        let ref mut fout = File::create(&Path::new("target/fractal.png")).unwrap();
+        let _ = image::ImageLuma8(imgbuf).save(fout, image::PNG);
     }
 }
