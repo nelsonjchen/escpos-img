@@ -102,20 +102,11 @@ mod tests {
         let (_, parsed_raster) = parsed.unwrap();
         assert_eq!(parsed_raster.mode, RasterBitImageMode::Normal);
         assert_eq!(parsed_raster.data.len(), 24576);
-        let _ = parsed_raster.make_img();
+        let imgbuf = parsed_raster.make_img();
 
-    #[test]
-    fn write_image() {
-        let escpos_img = include_bytes!("../assets/indian_head.escpos");
-        let parsed = print_raster_bit_image(escpos_img);
-        let (_, parsed_raster) = parsed.unwrap();
-        assert_eq!(parsed_raster.mode, RasterBitImageMode::Normal);
-        assert_eq!(parsed_raster.data.len(), 24576);
-        let _ = parsed_raster.make_img();
-
-        // use std::fs::File;
-        // use std::path::Path;
-        // let ref mut fout = File::create(&Path::new("target/fractal.png")).unwrap();
-        // let _ = image::ImageLuma8(imgbuf).save(fout, image::PNG);
+        use std::fs::File;
+        use std::path::Path;
+        let ref mut fout = File::create(&Path::new("target/fractal.png")).unwrap();
+        let _ = image::ImageLuma8(imgbuf).save(fout, image::PNG);
     }
 }
