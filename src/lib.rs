@@ -69,6 +69,14 @@ mod tests {
     fn parse_example() {
         let escpos_img = include_bytes!("../assets/indian_head.escpos");
         let parsed = print_raster_bit_image(escpos_img);
+        let (done, parsed_raster) = parsed.unwrap();
+        // Leftovers
+        assert_eq!(done, b"\n\n\n\n\x1dV\x00");
+        assert_eq!(parsed_raster.mode, RasterBitImageMode::Normal);
+        assert_eq!(parsed_raster.x, 64);
+        assert_eq!(parsed_raster.y, 384);
+        assert_eq!(parsed_raster.data.len(), 24576);
+    }
         let (_, parsed_raster) = parsed.unwrap();
         assert_eq!(parsed_raster.mode, RasterBitImageMode::Normal);
         assert_eq!(parsed_raster.data.len(), 24576);
