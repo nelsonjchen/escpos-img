@@ -3,7 +3,7 @@ extern crate nom;
 use nom::le_u16;
 
 extern crate image;
-use image::{ImageLuma8, DynamicImage, GenericImage};
+use image::DynamicImage;
 
 extern crate bit_vec;
 use bit_vec::BitVec;
