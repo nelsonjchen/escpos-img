@@ -1,6 +1,8 @@
 #[macro_use()]
 extern crate nom;
 
+extern crate image;
+
 pub enum RasterBitImageMode {
     Normal,
     DoubleWidth,
@@ -18,6 +20,5 @@ pub struct PrintRasterBitImage<'a> {
 #[cfg(test)]
 mod tests {
     #[test]
-    fn it_works() {
-    }
+    fn it_works() {}
 }
