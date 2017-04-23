@@ -68,14 +68,7 @@ impl<'a> PrintRasterBitImage<'a> {
         let bv = BitVec::from_bytes(self.data);
         for (i, bit) in bv.iter().enumerate() {
             let x = (i as u32) % width;
-            let luma_data = if bit { 255 } else { 0 };
-            println!("x: {:?}, y: {:?}, self.x: {:?}, self.y: {:?}, len: {:?},i: {:?}",
-                     x,
-                     y,
-                     self.x,
-                     self.y,
-                     imgbuf.height(),
-                     i);
+            let luma_data = if bit { 0 } else { 255 };
             imgbuf.put_pixel(x, y, image::Luma { data: [luma_data] });
             if x == width - 1 {
                 y = y + 1;
