@@ -3,6 +3,7 @@ extern crate nom;
 use nom::le_u16;
 
 extern crate image;
+use image::{ImageLuma8, DynamicImage, GenericImage};
 
 #[derive(PartialEq,Eq,Debug,Clone)]
 pub enum RasterBitImageMode {
@@ -52,6 +53,13 @@ named!(pub print_raster_bit_image( &[u8] ) -> PrintRasterBitImage,
         )
     )
 );
+
+impl<'a> PrintRasterBitImage<'a> {
+    fn make_img(self) -> DynamicImage::ImageLuma8 {
+        let mut imgbuf = DynamicImage::new_luma8(self.x as u32 * 8, self.y as u32 * 8);
+        imgbuf
+    }
+}
 
 #[cfg(test)]
 mod tests {
