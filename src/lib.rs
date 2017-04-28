@@ -6,6 +6,7 @@ extern crate image;
 
 extern crate bit_vec;
 use bit_vec::BitVec;
+use std::fmt;
 
 #[derive(PartialEq,Eq,Debug,Clone)]
 pub enum RasterBitImageMode {
@@ -15,12 +16,23 @@ pub enum RasterBitImageMode {
     Quadruple,
 }
 
-#[derive(PartialEq,Eq,Debug,Clone)]
+#[derive(PartialEq,Eq,Clone)]
 pub struct PrintRasterBitImage<'a> {
     pub mode: RasterBitImageMode,
     pub x: u16,
     pub y: u16,
     pub data: &'a [u8],
+}
+
+impl<'a> fmt::Debug for PrintRasterBitImage<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f,
+               "PrintRasterBitImage {{ mode: {:?}, x: {:?}, y: {:?}, data(len-only): {:?} }}",
+               self.mode,
+               self.x,
+               self.y,
+               self.data.len())
+    }
 }
 
 named!(pub print_raster_bit_image( &[u8] ) -> PrintRasterBitImage,
